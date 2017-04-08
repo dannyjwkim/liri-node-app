@@ -34,6 +34,7 @@ function myTweets(){
     access_token_secret: keys.twitterKeys.access_token_secret
   });
 
+  //Setting the default twitterUsername search if none inputted
   if(!twitterUsername){
     twitterUsername = "potus";
   }
@@ -51,6 +52,7 @@ function myTweets(){
 
         console.log(twitterResults);
 
+        //Logging the results to the log.txt file and added double lines to make results more neat and readable
         log("===================================================== \r\n" + twitterResults + "\r\n");
 
       }
@@ -84,6 +86,7 @@ function spotifyThisSong(songTitle) {
 
           console.log(spotifyResults);
 
+          //Logging the results to the log.txt file and added double lines to make results more neat and readable
           log("===================================================== \r\n" + spotifyResults + "\r\n");
 
         }
