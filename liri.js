@@ -12,8 +12,8 @@ var inputCommand = process.argv[2];
 switch(inputCommand) {
 	case "my-tweets": myTweets(); 
 		break;
-	// case "spotify-this-song": spotifyThisSong(); 
-	// 	break;
+	case "spotify-this-song": spotifyThisSong(); 
+		break;
 	// case "movie-this": movieThis(); 
 	// 	break;
 	// case "do-what-it-says": doWhatItSays(); 
@@ -27,7 +27,9 @@ switch(inputCommand) {
 	// 	"Be sure to put the movie or song name in quotation marks if it's more than one word.");
 	};
 
+//Twitter function
 function myTweets(){
+
 	var client = new twitter({
 	consumer_key: keys.twitterKeys.consumer_key,
 	consumer_secret: keys.twitterKeys.consumer_secret,
@@ -36,9 +38,10 @@ function myTweets(){
 	});
 
 	var twitterUsername = process.argv[3];
-		if(!twitterUsername){
-			twitterUsername = "potus";
-		}
+
+	if(!twitterUsername){
+		twitterUsername = "potus";
+	}
 
 	var params = {screen_name: twitterUsername};
 	client.get('statuses/user_timeline', params, function(error, data, response) {
@@ -50,12 +53,47 @@ function myTweets(){
 			data[i].created_at + "\r\n" + 
 			"========================= " + (i+1) + " =========================" + "\r\n";
 			console.log(twitterResults);
+
 			// log(twitterResults); // calling log function
+
 			}	  
 		} else {
 				console.log("Error :"+ error);
 				return;
 		}
 	});
+}
 
+//Spotify function
+function spotifyThisSong(songTitle) {
+
+	var songTitle = process.argv[3];
+
+	if(!songTitle){
+			songTitle = "The Sign";
+	}
+
+	params = songTitle;
+	spotify.search({ type: "track", query: params }, function(error, data) {
+		if(!error){
+			var songInfo = data.tracks.items;
+			for (var i = 0; i < 5; i++) {
+				if (songInfo[i] != undefined) {
+					var spotifyResults =
+					"Artist: " + songInfo[i].artists[0].name + "\r\n" +
+					"Song: " + songInfo[i].name + "\r\n" +
+					"Album the song is from: " + songInfo[i].album.name + "\r\n" +
+					"Preview Url: " + songInfo[i].preview_url + "\r\n" + 
+					"========================= " + (i+1) + " =========================" + "\r\n";
+					console.log(spotifyResults);
+
+					// log(spotifyResults); // calling log function
+
+				}
+			}
+		}	else {
+			console.log("Error :"+ error);
+			return;
+		}
+	});
 };
