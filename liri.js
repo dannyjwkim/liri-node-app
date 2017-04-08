@@ -11,8 +11,8 @@ switch(inputCommand) {
 		break;
 	case "spotify-this-song": spotifyThisSong(); 
 		break;
-	// case "movie-this": movieThis(); 
-	// 	break;
+	case "movie-this": movieThis(); 
+		break;
 	// case "do-what-it-says": doWhatItSays(); 
 	// 	break;
 	// // Instructions displayed in terminal to the user
@@ -50,6 +50,7 @@ function myTweets(){
 				data[i].text + "\r\n" + 
 				data[i].created_at + "\r\n" + 
 				"========================= " + (i+1) + " =========================" + "\r\n";
+
 				console.log(twitterResults);
 
 				// log(twitterResults); // calling log function
@@ -68,11 +69,11 @@ function spotifyThisSong(songTitle) {
 	var songTitle = process.argv[3];
 
 	if(!songTitle){
-		songTitle = "The Sign";
+		songTitle = "The Sign - Ace of Base";
 	}
 
 	var params = songTitle;
-	
+
 	spotify.search({ type: "track", query: params }, function(error, data) {
 		if(!error){
 			var songInfo = data.tracks.items;
@@ -84,6 +85,7 @@ function spotifyThisSong(songTitle) {
 					"Album the song is from: " + songInfo[i].album.name + "\r\n" +
 					"Preview Url: " + songInfo[i].preview_url + "\r\n" + 
 					"========================= " + (i+1) + " =========================" + "\r\n";
+
 					console.log(spotifyResults);
 
 					// log(spotifyResults); // calling log function
@@ -91,8 +93,53 @@ function spotifyThisSong(songTitle) {
 				}
 			}
 		}	else {
-			console.log("Error :"+ error);
-			return;
+				console.log("Error :"+ error);
+				return;
 		}
 	});
+
 };
+
+//Movie function
+function movieThis(){
+
+	var movie = process.argv[3];
+
+	if(!movie){
+		movie = "Mr. Nobody";
+	}
+
+	var params = movie
+
+	request("http://www.omdbapi.com/?t=" + params + "&y=&plot=short&r=json&tomatoes=true", function (error, response, body) {
+		
+		if (!error && response.statusCode == 200) {
+			
+			var movieObject = JSON.parse(body);
+			
+			var movieResults =
+			"========================= " + "Movie Info" + " =========================" + "\r\n" +
+			"Title: " + movieObject.Title+"\r\n"+
+			"Year: " + movieObject.Year+"\r\n"+
+			"Imdb Rating: " + movieObject.imdbRating+"\r\n"+
+			"Country: " + movieObject.Country+"\r\n"+
+			"Language: " + movieObject.Language+"\r\n"+
+			"Plot: " + movieObject.Plot+"\r\n"+
+			"Actors: " + movieObject.Actors+"\r\n"+
+			"Rotten Tomatoes Rating: " + movieObject.tomatoRating+"\r\n"+
+			"Rotten Tomatoes URL: " + movieObject.tomatoURL + "\r\n" +
+			"========================== " + "The End" + " ===========================";
+
+			console.log(movieResults);
+
+			// log(movieResults); // calling log function
+
+		} else {
+				console.log("Error :"+ error);
+				return;
+		}
+
+	});
+
+};
+
