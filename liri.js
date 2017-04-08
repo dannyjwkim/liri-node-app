@@ -10,17 +10,17 @@ var songTitle = process.argv[3];
 var movie = process.argv[3];
 
 switch(inputCommand) {
-	case "my-tweets": 
-		myTweets(); 
+	case "my-tweets":
+		myTweets();
 		break;
-	case "spotify-this-song": 
-		spotifyThisSong(); 
+	case "spotify-this-song":
+		spotifyThisSong();
 		break;
-	case "movie-this": 
-		movieThis(); 
+	case "movie-this":
+		movieThis();
 		break;
-	case "do-what-it-says": 
-		doWhatItSays(); 
+	case "do-what-it-says":
+		doWhatItSays();
 		break;
 	};
 
@@ -53,7 +53,7 @@ function myTweets(){
 
 				log("===================================================== \r\n" + twitterResults + "\r\n");
 
-			}	  
+			}
 		} else {
 				console.log("Error :"+ error);
 				return;
@@ -106,11 +106,11 @@ function movieThis(){
 	params = movie
 
 	request("http://www.omdbapi.com/?t=" + params + "&y=&plot=short&r=json&tomatoes=true", function (error, response, body) {
-		
+
 		if (!error && response.statusCode == 200) {
-			
+
 			var movieObject = JSON.parse(body);
-			
+
 			var movieResults =
 			"========================= " + "Movie Info" + " =========================" + "\r\n" +
 			"Title: " + movieObject.Title + "\r\n" +
@@ -157,7 +157,7 @@ function doWhatItSays() {
 function log(searchResults){
 
 	fs.appendFile("log.txt", searchResults, function (error) {
-  	if (error) throw error;
+		if (error) throw error;
 	});
 
 }
