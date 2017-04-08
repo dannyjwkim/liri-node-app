@@ -5,23 +5,23 @@ var spotify = require("spotify");
 var twitter = require("twitter");
 
 var inputCommand = process.argv[2];
+var twitterUsername = process.argv[3];
+var songTitle = process.argv[3];
+var movie = process.argv[3];
 
 switch(inputCommand) {
-	case "my-tweets": myTweets(); 
+	case "my-tweets": 
+		myTweets(); 
 		break;
-	case "spotify-this-song": spotifyThisSong(); 
+	case "spotify-this-song": 
+		spotifyThisSong(); 
 		break;
-	case "movie-this": movieThis(); 
+	case "movie-this": 
+		movieThis(); 
 		break;
-	// case "do-what-it-says": doWhatItSays(); 
-	// 	break;
-	// // Instructions displayed in terminal to the user
-	// default: console.log("\r\n" +"Try typing one of the following commands after 'node liri.js' : " +"\r\n"+
-	// 	"1. my-tweets 'any twitter name' " +"\r\n"+
-	// 	"2. spotify-this-song 'any song name' "+"\r\n"+
-	// 	"3. movie-this 'any movie name' "+"\r\n"+
-	// 	"4. do-what-it-says."+"\r\n"+
-	// 	"Be sure to put the movie or song name in quotation marks if it's more than one word.");
+	case "do-what-it-says": 
+		doWhatItSays(); 
+		break;
 	};
 
 //Twitter function
@@ -34,8 +34,6 @@ function myTweets(){
 		access_token_secret: keys.twitterKeys.access_token_secret
 	});
 
-	var twitterUsername = process.argv[3];
-
 	if(!twitterUsername){
 		twitterUsername = "potus";
 	}
@@ -43,7 +41,7 @@ function myTweets(){
 	var params = {screen_name: twitterUsername};
 
 	client.get('statuses/user_timeline', params, function(error, data, response) {
-	  if (!error) {
+		if (!error) {
 			for(var i = 0; i < data.length; i++) {
 				var twitterResults = 
 				"@" + data[i].user.screen_name + ": " + 
@@ -53,7 +51,7 @@ function myTweets(){
 
 				console.log(twitterResults);
 
-				// log(twitterResults); // calling log function
+				log("===================================================== \r\n" + twitterResults + "\r\n");
 
 			}	  
 		} else {
@@ -66,18 +64,16 @@ function myTweets(){
 //Spotify function
 function spotifyThisSong(songTitle) {
 
-	var songTitle = process.argv[3];
-
 	if(!songTitle){
 		songTitle = "The Sign - Ace of Base";
 	}
 
-	var params = songTitle;
+	params = songTitle;
 
 	spotify.search({ type: "track", query: params }, function(error, data) {
 		if(!error){
 			var songInfo = data.tracks.items;
-			for (var i = 0; i < 5; i++) {
+			for (var i = 0; i < 3; i++) {
 				if (songInfo[i] != undefined) {
 					var spotifyResults =
 					"Artist: " + songInfo[i].artists[0].name + "\r\n" +
@@ -88,7 +84,7 @@ function spotifyThisSong(songTitle) {
 
 					console.log(spotifyResults);
 
-					// log(spotifyResults); // calling log function
+					log("===================================================== \r\n" + spotifyResults + "\r\n");
 
 				}
 			}
@@ -103,13 +99,11 @@ function spotifyThisSong(songTitle) {
 //Movie function
 function movieThis(){
 
-	var movie = process.argv[3];
-
 	if(!movie){
 		movie = "Mr. Nobody";
 	}
 
-	var params = movie
+	params = movie
 
 	request("http://www.omdbapi.com/?t=" + params + "&y=&plot=short&r=json&tomatoes=true", function (error, response, body) {
 		
@@ -119,20 +113,20 @@ function movieThis(){
 			
 			var movieResults =
 			"========================= " + "Movie Info" + " =========================" + "\r\n" +
-			"Title: " + movieObject.Title+"\r\n"+
-			"Year: " + movieObject.Year+"\r\n"+
-			"Imdb Rating: " + movieObject.imdbRating+"\r\n"+
-			"Country: " + movieObject.Country+"\r\n"+
-			"Language: " + movieObject.Language+"\r\n"+
-			"Plot: " + movieObject.Plot+"\r\n"+
-			"Actors: " + movieObject.Actors+"\r\n"+
-			"Rotten Tomatoes Rating: " + movieObject.tomatoRating+"\r\n"+
+			"Title: " + movieObject.Title + "\r\n" +
+			"Year: " + movieObject.Year + "\r\n" +
+			"Imdb Rating: " + movieObject.imdbRating+ "\r\n" +
+			"Country: " + movieObject.Country + "\r\n" +
+			"Language: " + movieObject.Language + "\r\n" +
+			"Plot: " + movieObject.Plot + "\r\n" +
+			"Actors: " + movieObject.Actors + "\r\n" +
+			"Rotten Tomatoes Rating: " + movieObject.tomatoRating + "\r\n" +
 			"Rotten Tomatoes URL: " + movieObject.tomatoURL + "\r\n" +
 			"========================== " + "The End" + " ===========================";
 
 			console.log(movieResults);
 
-			// log(movieResults); // calling log function
+			log(movieResults + "\r\n");
 
 		} else {
 				console.log("Error :"+ error);
@@ -142,4 +136,29 @@ function movieThis(){
 	});
 
 };
+
+//do-what-it-says function
+function doWhatItSays() {
+
+	fs.readFile("random.txt", "utf8", function (error, data) {
+
+		if (!error) {
+			var doWhatItSaysArray = data.split(",");
+			spotifyThisSong(doWhatItSaysArray[1]);
+		} else {
+			console.log("Error occurred" + error);
+		}
+
+	});
+
+};
+
+//log function
+function log(searchResults){
+
+	fs.appendFile("log.txt", searchResults, function (error) {
+  	if (error) throw error;
+	});
+
+}
 
